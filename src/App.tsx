@@ -201,7 +201,7 @@ const App: React.FC = () => {
   if (view === 'list') {
     return (
       <div className="min-h-screen flex flex-col bg-slate-100">
-        <Header view="list" />
+        <Header view="list" className="print:hidden" />
         <main className="flex-grow">
           <ShipmentList
             shipments={allShipments}
@@ -210,7 +210,7 @@ const App: React.FC = () => {
             onDelete={handleDeleteShipment}
           />
         </main>
-        <Footer />
+        <Footer className="print:hidden" />
         {notification && (
             <div className="fixed top-24 right-5 bg-indigo-600 text-white py-2 px-4 rounded-lg shadow-lg z-[100] animate-fade-in-down">
                 {notification}
@@ -234,6 +234,7 @@ const App: React.FC = () => {
         onSave={handleSaveAndClose} 
         onGoBack={handleGoBack}
         onOpenPrintView={() => setIsPrintViewOpen(true)}
+        className="print:hidden"
       />
       <main className="flex-grow container mx-auto p-4 md:p-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -266,7 +267,7 @@ const App: React.FC = () => {
           </div>
         </div>
       </main>
-      <Footer />
+      <Footer className="print:hidden" />
       <ExpensesModal 
         isOpen={isExpensesModalOpen}
         onClose={() => setIsExpensesModalOpen(false)}
