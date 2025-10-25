@@ -169,4 +169,3 @@ export const PrintableSummary: React.FC<PrintableSummaryProps> = ({ isOpen, onCl
   );
 };```
 
-
