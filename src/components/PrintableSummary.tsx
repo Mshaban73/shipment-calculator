@@ -23,7 +23,7 @@ interface PrintableSummaryProps {
 
 // مكون صغير لعرض صف في الملخص المطبوع لتنظيم الكود
 const PrintSummaryRow: React.FC<{ label: string; value: string; isBold?: boolean; className?: string }> = ({ label, value, isBold, className }) => (
-    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px', borderRadius: '4px' }} className={className}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px', borderRadius: '4px', pageBreakInside: 'avoid' }} className={className}>
         <span style={{ fontWeight: isBold ? 'bold' : 'normal' }}>{label}</span>
         <span style={{ fontWeight: 'bold' }}>{value}</span>
     </div>
@@ -33,9 +33,34 @@ const PrintSummaryRow: React.FC<{ label: string; value: string; isBold?: boolean
 export const PrintableSummary: React.FC<PrintableSummaryProps> = ({ isOpen, onClose, shipment, calculations }) => {
   if (!isOpen || !shipment) return null;
 
+  // --- بداية الحل النهائي والمضمون للطباعة ---
   const handlePrint = () => {
+    const printableArea = document.getElementById('printable-area');
+    if (!printableArea) {
+      console.error('Printable area not found!');
+      return;
+    }
+
+    // 1. نسخ المحتوى المُراد طباعته
+    const contentToPrint = printableArea.innerHTML;
+    
+    // 2. تخزين محتوى الصفحة الأصلي
+    const originalPageContent = document.body.innerHTML;
+
+    // 3. استبدال كل محتوى الصفحة بالمحتوى المُراد طباعته فقط
+    document.body.innerHTML = contentToPrint;
+
+    // 4. استدعاء أمر الطباعة
     window.print();
+
+    // 5. إعادة محتوى الصفحة الأصلي بعد الطباعة (سواء طبع أو ألغى)
+    document.body.innerHTML = originalPageContent;
+
+    // 6. إعادة تحميل الصفحة لاستعادة حالة React بالكامل
+    // هذا ضروري لأن الخطوة رقم 3 تدمر تطبيق React
+    window.location.reload();
   };
+  // --- نهاية الحل النهائي والمضمون للطباعة ---
   
   const formatDate = (isoString: string) => {
     return new Date(isoString).toLocaleDateString('ar-EG', {
@@ -55,14 +80,15 @@ export const PrintableSummary: React.FC<PrintableSummaryProps> = ({ isOpen, onCl
   
   return (
     <>
+      {/* الجزء دا بيظهر على الشاشة فقط (المودال) */}
       <div 
-        className="fixed inset-0 bg-black bg-opacity-70 z-[60] flex justify-center items-center p-4 print:hidden transition-opacity duration-300"
+        className="fixed inset-0 bg-black bg-opacity-70 z-[60] flex justify-center items-center p-4 print:hidden"
         onClick={onClose}
         aria-modal="true"
         role="dialog"
       >
         <div 
-          className="bg-slate-50 rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col transform transition-all"
+          className="bg-slate-50 rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col"
         >
           <div className="p-4 px-6 border-b border-slate-200 bg-white rounded-t-xl flex justify-between items-center flex-shrink-0">
             <h2 className="text-xl font-bold text-slate-700">معاينة طباعة الملخص</h2>
@@ -71,12 +97,13 @@ export const PrintableSummary: React.FC<PrintableSummaryProps> = ({ isOpen, onCl
                 <span>طباعة</span>
               </button>
               <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition p-2 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
           </div>
-
-          <div id="printable-area-container" className="p-6 md:p-8 overflow-y-auto">
+          
+          {/* المحتوى اللي بيتم عرضه في المودال واللي هيتنسخ منه للطباعة */}
+          <div className="p-6 md:p-8 overflow-y-auto">
              <div id="printable-area" className="bg-white p-6 md:p-8 rounded-lg">
                 <div className="text-center mb-8 border-b border-slate-200 pb-6">
                     <h1 className="text-2xl md:text-3xl font-bold text-slate-800">ملخص شحنة: {shipment.name}</h1>
@@ -123,33 +150,25 @@ export const PrintableSummary: React.FC<PrintableSummaryProps> = ({ isOpen, onCl
                         <PrintSummaryRow label="إجمالي مبلغ البيع المتوقع" value={formatCurrency(calculations.totalSalePrice)} isBold={true} className="bg-indigo-100" />
                     </div>
                 </div>
-
             </div>
           </div>
         </div>
       </div>
       
+      {/* CSS للطباعة فقط (لا يؤثر على العرض) */}
       <style>
         {`
           @media print {
-            .print\\:hidden { display: none !important; }
-            body > *:not(#printable-area-container) { display: none !important; }
-            #printable-area-container, #printable-area {
-                display: block !important;
-                visibility: visible !important;
-            }
-            #printable-area-container {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-            }
             .bg-blue-100 { background-color: #DBEAFE !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .bg-green-100 { background-color: #D1FAE5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .bg-indigo-100 { background-color: #E0E7FF !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             @page {
               size: A4;
               margin: 20mm;
+            }
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
             table {
               width: 100%;
@@ -163,8 +182,6 @@ export const PrintableSummary: React.FC<PrintableSummaryProps> = ({ isOpen, onCl
             }
             th {
               background-color: #f1f5f9 !important;
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
             }
             h1, h2 {
               color: black !important;
