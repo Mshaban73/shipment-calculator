@@ -96,23 +96,36 @@ export const PrintableSummary: React.FC<PrintableSummaryProps> = ({ isOpen, onCl
           </div>
         </div>
       </div>
-      <div id="print-mount"></div>
+      
+      {/* ### الكود المعدل هنا ### */}
       <style>
         {`
           @media print {
-            body > * {
-              display: none !important;
+            /* إخفاء كل العناصر في الصفحة بشكل مبدئي */
+            body * {
+              visibility: hidden !important;
             }
-            #print-mount, #print-mount * {
-              display: block !important;
+            
+            /* إظهار الجزء المخصص للطباعة فقط وكل محتوياته */
+            #printable-area, #printable-area * {
+              visibility: visible !important;
             }
-            #print-mount {
-              position: absolute;
-              left: 0;
-              top: 0;
-              right: 0;
-              width: 100%;
+            
+            /* وضع الجزء المخصص للطباعة ليملأ الصفحة */
+            #printable-area {
+              position: absolute !important;
+              left: 0 !important;
+              top: 0 !important;
+              right: 0 !important;
+              width: 100% !important;
+              margin: 0 !important;
+              padding: 0 !important;
+              border: none !important;
+              box-shadow: none !important;
+              background-color: white !important;
+              border-radius: 0 !important;
             }
+            
             @page {
               size: A4;
               margin: 20mm;
@@ -144,6 +157,7 @@ export const PrintableSummary: React.FC<PrintableSummaryProps> = ({ isOpen, onCl
             .text-blue-600 { color: #2563eb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .text-green-600 { color: #16a34a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
           }
+          
           @keyframes scale-in {
             from { transform: scale(0.95); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
@@ -153,4 +167,6 @@ export const PrintableSummary: React.FC<PrintableSummaryProps> = ({ isOpen, onCl
       </style>
     </>
   );
-};
+};```
+
+وبالنسبة لملف `src/types.ts`، أنا لسه محتاجه عشان أبص بصة أخيرة وأتأكد إن كل حاجة تمام ومتوافقة مع بعضها. ابعتهولي أول ما تكون جاهز.
