@@ -169,4 +169,4 @@ export const PrintableSummary: React.FC<PrintableSummaryProps> = ({ isOpen, onCl
   );
 };```
 
-وبالنسبة لملف `src/types.ts`، أنا لسه محتاجه عشان أبص بصة أخيرة وأتأكد إن كل حاجة تمام ومتوافقة مع بعضها. ابعتهولي أول ما تكون جاهز.
+
