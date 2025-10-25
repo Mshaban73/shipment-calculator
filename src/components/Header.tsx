@@ -5,10 +5,12 @@ interface HeaderProps {
   onSave?: () => void;
   onGoBack?: () => void;
   onOpenPrintView?: () => void;
+  className?: string; // Prop to accept className
 }
 
-export const Header: React.FC<HeaderProps> = ({ view, onSave, onGoBack, onOpenPrintView }) => (
-  <header className="bg-white shadow-md sticky top-0 z-40 print:hidden">
+export const Header: React.FC<HeaderProps> = ({ view, onSave, onGoBack, onOpenPrintView, className }) => (
+  // Apply the passed className here
+  <header className={`bg-white shadow-md sticky top-0 z-40 ${className}`}>
     <div className="container mx-auto px-4 py-4 flex justify-between items-center">
       <div className='text-center sm:text-start'>
         <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800">
