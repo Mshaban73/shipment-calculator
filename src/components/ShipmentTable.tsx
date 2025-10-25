@@ -43,7 +43,9 @@ export const ShipmentTable: React.FC<ShipmentTableProps> = ({ items, onRemoveIte
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-600 font-medium">{formatCurrency(item.priceUSD, 'USD')}</td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-blue-600 font-bold">{formatCurrency(item.unitCostAfterExpenses)}</td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-green-600 font-bold">{formatCurrency(item.itemUnitSalePrice)}</td>
-                  <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-600 w-28">
+                  
+                  {/* ### السطر دا هو اللي اتعدل ### */}
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-600 w-36">
                     <div className="relative">
                       <input
                         type="number"
@@ -54,6 +56,7 @@ export const ShipmentTable: React.FC<ShipmentTableProps> = ({ items, onRemoveIte
                       <span className="absolute start-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">%</span>
                     </div>
                   </td>
+                  
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-green-700 font-semibold">{formatCurrency(item.itemProfit)}</td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
                     <button onClick={() => onRemoveItem(item.id)} title="إزالة الصنف" className="text-red-600 hover:text-red-900 transition">
