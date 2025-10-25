@@ -48,25 +48,21 @@ const App: React.FC = () => {
 
         if (savedData) {
             const parsedData = JSON.parse(savedData);
-            // Basic validation to ensure we have a non-empty array
             if (Array.isArray(parsedData) && parsedData.length > 0) {
                 shipmentsToLoad = parsedData;
             }
         }
 
         if (shipmentsToLoad.length === 0) {
-            // If no saved data or saved data is empty/invalid, load the sample
             shipmentsToLoad = [sampleShipment];
         }
 
-        // Sort whatever we decided to load
         shipmentsToLoad.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         setAllShipments(shipmentsToLoad);
 
     } catch (error) {
         console.error("Failed to load or parse shipments from localStorage", error);
         showNotification('خطأ في تحميل البيانات، سيتم عرض مثال عملي.');
-        // On error, load sample data as a fallback, sorted
         setAllShipments([sampleShipment].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
     }
   }, []);
@@ -104,7 +100,7 @@ const App: React.FC = () => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedShipments));
       showNotification('تم حذف الشحنة بنجاح.');
        if (updatedShipments.length === 0) {
-          localStorage.removeItem(STORAGE_KEY); // Clean up local storage if empty
+          localStorage.removeItem(STORAGE_KEY);
       }
     }
   };
@@ -201,7 +197,7 @@ const App: React.FC = () => {
   if (view === 'list') {
     return (
       <div className="min-h-screen flex flex-col bg-slate-100">
-        <Header view="list" className="print:hidden" />
+        <Header view="list" />
         <main className="flex-grow">
           <ShipmentList
             shipments={allShipments}
@@ -210,7 +206,7 @@ const App: React.FC = () => {
             onDelete={handleDeleteShipment}
           />
         </main>
-        <Footer className="print:hidden" />
+        <Footer />
         {notification && (
             <div className="fixed top-24 right-5 bg-indigo-600 text-white py-2 px-4 rounded-lg shadow-lg z-[100] animate-fade-in-down">
                 {notification}
@@ -234,11 +230,13 @@ const App: React.FC = () => {
         onSave={handleSaveAndClose} 
         onGoBack={handleGoBack}
         onOpenPrintView={() => setIsPrintViewOpen(true)}
-        className="print:hidden"
       />
+      {/* ### بداية التعديل على التصميم ### */}
       <main className="flex-grow container mx-auto p-4 md:p-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-1 space-y-8">
+        <div className="flex flex-col gap-8">
+          
+          {/* قسم إدخال البيانات (في الأعلى) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <GlobalInputs
               shipmentName={activeShipment.name}
               onNameChange={handleUpdateName}
@@ -249,7 +247,9 @@ const App: React.FC = () => {
             />
             <AddItemForm onAddItem={handleAddItem} />
           </div>
-          <div className="lg:col-span-2 space-y-8">
+
+          {/* قسم عرض البيانات (في الأسفل) */}
+          <div className="space-y-8">
             <ShipmentTable
               items={calculations.itemsWithCalculations}
               onRemoveItem={handleRemoveItem}
@@ -265,9 +265,11 @@ const App: React.FC = () => {
                 totalSalePrice={calculations.totalSalePrice}
             />
           </div>
+
         </div>
       </main>
-      <Footer className="print:hidden" />
+      {/* ### نهاية التعديل على التصميم ### */}
+      <Footer />
       <ExpensesModal 
         isOpen={isExpensesModalOpen}
         onClose={() => setIsExpensesModalOpen(false)}
