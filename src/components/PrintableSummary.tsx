@@ -32,7 +32,7 @@ export const PrintableSummary: React.FC<PrintableSummaryProps> = ({ isOpen, onCl
   return (
     <>
       <div 
-        className="fixed inset-0 bg-black bg-opacity-70 z-[60] flex justify-center items-center p-4 print:hidden transition-opacity duration-300"
+        className="fixed inset-0 bg-black bg-opacity-70 z- flex justify-center items-center p-4 print:hidden transition-opacity duration-300"
         onClick={onClose}
         aria-modal="true"
         role="dialog"
@@ -97,21 +97,17 @@ export const PrintableSummary: React.FC<PrintableSummaryProps> = ({ isOpen, onCl
         </div>
       </div>
       
-      {/* ### الكود المعدل هنا ### */}
       <style>
         {`
           @media print {
-            /* إخفاء كل العناصر في الصفحة بشكل مبدئي */
             body * {
               visibility: hidden !important;
             }
             
-            /* إظهار الجزء المخصص للطباعة فقط وكل محتوياته */
             #printable-area, #printable-area * {
               visibility: visible !important;
             }
             
-            /* وضع الجزء المخصص للطباعة ليملأ الصفحة */
             #printable-area {
               position: absolute !important;
               left: 0 !important;
@@ -167,5 +163,4 @@ export const PrintableSummary: React.FC<PrintableSummaryProps> = ({ isOpen, onCl
       </style>
     </>
   );
-};```
-
+};
