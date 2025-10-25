@@ -7,16 +7,13 @@ interface ShipmentTableProps {
   onUpdateItem: (id: string, field: keyof ShipmentItem, value: string | number) => void;
 }
 
-// ### الكلمة دي هي اللي كانت ناقصة ###
 export const ShipmentTable: React.FC<ShipmentTableProps> = ({ items, onRemoveItem, onUpdateItem }) => {
-    // State جديد لتتبع الصف الذي يتم تعديله حالياً
     const [editingItemId, setEditingItemId] = useState<string | null>(null);
 
     const formatCurrency = (amount: number, currency: 'EGP' | 'USD' = 'EGP') => {
         return new Intl.NumberFormat('ar-EG', { style: 'currency', currency, minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
     };
 
-    // --- حساب الإجماليات ---
     const totalQuantity = items.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
     const totalItemProfit = items.reduce((sum, item) => sum + item.itemProfit, 0);
     
@@ -47,31 +44,21 @@ export const ShipmentTable: React.FC<ShipmentTableProps> = ({ items, onRemoveIte
                 const isEditing = editingItemId === item.id;
                 return (
                   <tr key={item.id} className={isEditing ? "bg-indigo-50" : "hover:bg-slate-50 transition-colors"}>
-                    
-                    {/* === بداية لوجيك التعديل المباشر === */}
                     <td className="px-4 py-2 whitespace-nowrap text-sm text-slate-800 font-semibold">
                       {isEditing ? (
                         <input type="text" value={item.name} onChange={(e) => onUpdateItem(item.id, 'name', e.target.value)} className="w-full p-1.5 border border-slate-300 rounded-md shadow-sm" />
-                      ) : (
-                        item.name
-                      )}
+                      ) : ( item.name )}
                     </td>
                     <td className="px-4 py-2 whitespace-nowrap text-sm text-slate-600">
                       {isEditing ? (
                         <input type="number" value={item.quantity} onChange={(e) => onUpdateItem(item.id, 'quantity', e.target.value)} className="w-24 p-1.5 border border-slate-300 rounded-md shadow-sm" />
-                      ) : (
-                        item.quantity
-                      )}
+                      ) : ( item.quantity )}
                     </td>
                     <td className="px-4 py-2 whitespace-nowrap text-sm text-slate-600 font-medium">
                       {isEditing ? (
                          <input type="number" value={item.priceUSD} onChange={(e) => onUpdateItem(item.id, 'priceUSD', e.target.value)} className="w-24 p-1.5 border border-slate-300 rounded-md shadow-sm" />
-                      ) : (
-                        formatCurrency(item.priceUSD, 'USD')
-                      )}
+                      ) : ( formatCurrency(item.priceUSD, 'USD') )}
                     </td>
-                    {/* === نهاية لوجيك التعديل المباشر === */}
-
                     <td className="px-4 py-2 whitespace-nowrap text-sm text-blue-600 font-bold">{formatCurrency(item.unitCostAfterExpenses)}</td>
                     <td className="px-4 py-2 whitespace-nowrap text-sm text-green-600 font-bold">{formatCurrency(item.itemUnitSalePrice)}</td>
                     <td className="px-4 py-2 whitespace-nowrap text-sm text-slate-600 w-40">
@@ -101,7 +88,6 @@ export const ShipmentTable: React.FC<ShipmentTableProps> = ({ items, onRemoveIte
                 )
               })}
             </tbody>
-
             <tfoot className="bg-slate-100 border-t-2 border-slate-300">
                 <tr>
                     <td className="px-4 py-3 font-bold text-slate-800 text-sm">الإجمالي</td>
@@ -114,7 +100,6 @@ export const ShipmentTable: React.FC<ShipmentTableProps> = ({ items, onRemoveIte
                     <td className="px-4 py-3"></td>
                 </tr>
             </tfoot>
-
           </table>
         )}
       </div>
